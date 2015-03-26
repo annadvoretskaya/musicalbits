@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Django default" uuid="f60ad43a-cda7-447b-9b9f-8ddadfb29fda">
+      <user-name>root</user-name>
+      <user-password>dfebdfc4dfc4df9bdf9bdf98df99df9adf99df98dfd0</user-password>
+      <schema-pattern>dbmusic.* mysql.*</schema-pattern>
+      <default-schemas>dbmusic.* mysql.*</default-schemas>
+    </data-source>
+  </component>
+</project>
