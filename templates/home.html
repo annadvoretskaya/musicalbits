@@ -1,8 +1,8 @@
 {% extends 'index.html' %}
-
+{% load crispy_forms_tags %}
 {% block main %}
  <div>
- <h1>Third-party authentication demo</h1>
+ <h1></h1>
 
  <p>
    <ul>
@@ -14,6 +14,9 @@
        <a href="{% url 'auth:logout' %}?next={{ request.path }}">Logout</a>
      </li>
    {% else %}
+       {% crispy sign_in_form %}
+       <hr/>
+       {% crispy sing_up_form %}
      <li>
        <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
      </li>

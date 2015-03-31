@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social.apps.django_app.default',
+    'crispy_forms',
     'main',
 )
 
@@ -81,22 +82,23 @@ ROOT_URLCONF = 'musicalbits.urls'
 
 WSGI_APPLICATION = 'musicalbits.wsgi.application'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
+import os
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dbmusic',
-        'USER': 'root',
-        'PASSWORD': 'Ann1123032z',
+        'NAME': os.environ.get('DB_NAME'), #'dbmusic',
+        'USER': os.environ.get('DB_USER'), #'root',
+        'PASSWORD': os.environ.get('DB_PASSWORD') #'Ann1123032z',
     }
 }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
-
+AUTH_USER_MODEL = 'main.ApplicationUser'
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
