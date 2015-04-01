@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.forms.utils import ErrorList
 from models import ApplicationUser
 
+
 from django.core import validators
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, HTML
@@ -99,6 +100,17 @@ class SignUpForm(forms.ModelForm):
                             password=self.cleaned_data['password'])
 
 
+class AudioUploadForm(forms.Form):
+    file = forms.FileField()
 
+    def __init__(self, *args, **kwargs):
+        super(AudioUploadForm, self).__init__(*args, **kwargs)
+        self.user_cache = None
+        self.helper = FormHelper(self)
+        self.helper.form_action = '/file/upload/'
+        self.helper.layout = Layout(
+            'file',
+            Submit('upload', 'upload'),
+        )
 
 

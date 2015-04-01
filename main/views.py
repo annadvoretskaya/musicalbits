@@ -1,17 +1,23 @@
+import os
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.http import HttpResponse
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
-from forms import SignInModelForm, SignUpForm
-
+from forms import SignInModelForm, SignUpForm, AudioUploadForm
+from main.dropbox_api import Dropbox
+from main.models import Audio
+from dateutil.parser import parse
+import urllib
+from eyed3 import load
 
 def home(request):
     return render(request, 'home.html', {
         'user': request.user,
         'request': request,
-        'sign_in_form': SignInModelForm(),
-        'sing_up_form': SignUpForm()
+        'audio_upload_form': AudioUploadForm(),
+        'audio': request.user.audio.all() if not request.user.is_anonymous() else []
     })
 
 
@@ -42,3 +48,25 @@ def signup(request):
         'sign_in_form': SignInModelForm()
     })
 
+
+@login_required
+def file_upload(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+
+        if file:
+            data = Dropbox().upload(file)
+            filename, headers = urllib.urlretrieve(data['url'])
+            print filename
+            audiofile = load(filename)
+            print audiofile
+            audio_tag = audiofile.tag.artist
+            print audio_tag
+            Audio.objects.create(url=data['url'],
+                                 expires=parse(data['expires']),
+                                 user=request.user,
+                                 path=data['path'])
+
+            print audio_tag
+            return redirect('home')
+    raise Http404

@@ -11,5 +11,6 @@ urlpatterns = patterns('',
 urlpatterns += patterns('main.views',
     url(r'^signin/$', 'signin', name='signin'),
     url(r'^signup/$', 'signup', name='signup'),
+    url(r'^file/upload/$', 'file_upload', name='file_upload'),
     url(r'^$', 'home', name='home'),
 )

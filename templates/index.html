@@ -5,15 +5,52 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>MusicalBits</title>
-    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}" rel="stylesheet">
+    {#    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">#}
+    <link href="{% static 'bootstrap/css/bootstrap-lumen.min.css' %}" rel="stylesheet">
+    {#    <link href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}" rel="stylesheet">#}
     <link href="{% static 'bootstrap/css/style.css' %}" rel="stylesheet">
-    </head>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.2.1/bootstrap-social.css">
+</head>
 <body>
-    {% block main %}{% endblock %}
-    <script src="{% static 'coffee-script.js' %}" type="text/javascript"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="{% static 'jquery-ui-1.11.4.custom/jquery-ui.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-3">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Brand</a>
+        </div>
+        {% if user and not user.is_anonymous %}
+            <span class="navbar-brand pull-right">
+                Hello, {{ user.username  }}
+                <a href="#!">Logout</a>
+            </span>
+        {% else %}
+            <div class="collapse navbar-collapse pull-right social-buttons" id="bs-example-navbar-collapse-3">
+                <a class="btn btn-social btn-facebook"
+                   href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}"
+                   role="button">
+                    <i class="fa fa-facebook-square "></i> Sign in with Facebook</a>
+                <a class="btn btn-social btn-twitter" href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}"
+                   role="button">
+                    <i class="fa fa-twitter-square"></i> Sign in with Twitter</a>
+                <a class="btn btn-social btn-vk" href="{% url 'social:begin' 'vk-oauth2' %}?next={{ request.path }}"
+                   role="button">
+                    <i class="fa fa-vk"></i> Sign in with VK</a>
+            </div>
+        {% endif %}
+    </div>
+</nav>
+{% block main %}{% endblock %}
+<script src="{% static 'coffee-script.js' %}" type="text/javascript"></script>
+{#    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>#}
+<script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
+<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+{% block js %}{% endblock %}
 </body>
 </html>
