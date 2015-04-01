@@ -1,33 +1,47 @@
 {% extends 'index.html' %}
 {% load crispy_forms_tags %}
 {% block main %}
- <div>
- <h1></h1>
+    <div class="modal hide fade">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Modal header</h3>
+    </div>
+    <div class="modal-body">
+    <p>One fine body…</p>
+    </div>
+    <div class="modal-footer">
+    <a href="#" class="btn">Close</a>
+    <a href="#" class="btn btn-primary">Save changes</a>
+    </div>
+    </div>
 
- <p>
-   <ul>
-   {% if user and not user.is_anonymous %}
-     <li>
-       <a>Hello {{ user.get_full_name|default:user.username }}!</a>
-     </li>
-     <li>
-       <a href="{% url 'auth:logout' %}?next={{ request.path }}">Logout</a>
-     </li>
-   {% else %}
-       {% crispy sign_in_form %}
-       <hr/>
-       {% crispy sing_up_form %}
-     <li>
-       <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>
-     </li>
-     <li>
-       <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>
-     </li>
-       <li>
-       <a href="{% url 'social:begin' 'vk-oauth2' %}?next={{ request.path }}">Login with VK</a>
-     </li>
-   {% endif %}
-   </ul>
- </p>
- </div>
+{# <div>#}
+{# <h1></h1>#}
+{##}
+{# <p>#}
+{#   <ul>#}
+{#   {% if user and not user.is_anonymous %}#}
+{#     <li>#}
+{#       <a>Hello {{ user.get_full_name|default:user.username }}!</a>#}
+{#     </li>#}
+{#     <li>#}
+{#       <a href="{% url 'auth:logout' %}?next={{ request.path }}">Logout</a>#}
+{#     </li>#}
+{#   {% else %}#}
+{#       {% crispy sign_in_form %}#}
+{#       <hr/>#}
+{#       {% crispy sing_up_form %}#}
+{#     <li>#}
+{#       <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}">Login with Facebook</a>#}
+{#     </li>#}
+{#     <li>#}
+{#       <a href="{% url 'social:begin' 'twitter' %}?next={{ request.path }}">Login with Twitter</a>#}
+{#     </li>#}
+{#       <li>#}
+{#       <a href="{% url 'social:begin' 'vk-oauth2' %}?next={{ request.path }}">Login with VK</a>#}
+{#     </li>#}
+{#   {% endif %}#}
+{#   </ul>#}
+{# </p>#}
+{# </div>#}
 {% endblock %}

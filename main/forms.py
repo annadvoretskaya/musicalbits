@@ -94,7 +94,6 @@ class SignUpForm(forms.ModelForm):
             email=self.cleaned_data['email'],
             password=self.cleaned_data['password']
         )
-#        user.set_password(self.cleaned_data['password'])
         user.save()
         return authenticate(username=self.cleaned_data['username'],
                             password=self.cleaned_data['password'])
