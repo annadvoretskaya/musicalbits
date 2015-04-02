@@ -1,3 +1,4 @@
+import json
 import os
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -5,12 +6,14 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_exempt
 from forms import SignInModelForm, SignUpForm, AudioUploadForm
 from main.dropbox_api import Dropbox
 from main.models import Audio
 from dateutil.parser import parse
 import urllib
 from eyed3 import load
+
 
 def home(request):
     return render(request, 'home.html', {
@@ -56,17 +59,43 @@ def file_upload(request):
 
         if file:
             data = Dropbox().upload(file)
-            filename, headers = urllib.urlretrieve(data['url'])
-            print filename
-            audiofile = load(filename)
-            print audiofile
-            audio_tag = audiofile.tag.artist
-            print audio_tag
-            Audio.objects.create(url=data['url'],
+            # filename, headers = urllib.urlretrieve(data['url'])
+            # print type(file)
+            audiofile = load(file.temporary_file_path())
+            # print str(audiofile.tag.artist.encode('utf-8'))
+            # print type(audiofile.tag.artist.encode('utf-8'))
+            Audio.objects.create(artist=audiofile.tag.artist,
+                                 title=audiofile.tag.title,
+                                 url=data['url'],
                                  expires=parse(data['expires']),
                                  user=request.user,
                                  path=data['path'])
 
-            print audio_tag
             return redirect('home')
     raise Http404
+
+
+def logout_user(request):
+    print 'HERE'
+    logout(request)
+    return redirect('home')
+
+
+@login_required
+@csrf_exempt
+def file_upload_ajax(request):
+    file = request.FILES['uploadfile']
+    if file:
+        data = Dropbox().upload(file)
+        # filename, headers = urllib.urlretrieve(data['url'])
+        # print type(file)
+        audiofile = load(file.temporary_file_path())
+        # print str(audiofile.tag.artist.encode('utf-8'))
+        # print type(audiofile.tag.artist.encode('utf-8'))
+        Audio.objects.create(artist=audiofile.tag.artist,
+                             title=audiofile.tag.title,
+                             url=data['url'],
+                             expires=parse(data['expires']),
+                             user=request.user,
+                             path=data['path'])
+    return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")

@@ -49,6 +49,8 @@ INSTALLED_APPS = (
     'social.apps.django_app.default',
     'crispy_forms',
     'main',
+    'djcelery',
+    'kombu.transport.django'
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -121,3 +123,10 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+import djcelery
+djcelery.setup_loader()
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+BROKER_TRANSPORT = "django"
+CELERY_DISABLE_RATE_LIMITS = True

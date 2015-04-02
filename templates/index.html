@@ -9,10 +9,12 @@
     <link href="{% static 'bootstrap/css/bootstrap-lumen.min.css' %}" rel="stylesheet">
     {#    <link href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}" rel="stylesheet">#}
     <link href="{% static 'bootstrap/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'music-player/css/style.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.2.1/bootstrap-social.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/css/dropzone.css">
 </head>
-<body>
+<body class="container">
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -27,8 +29,8 @@
         </div>
         {% if user and not user.is_anonymous %}
             <span class="navbar-brand pull-right">
-                Hello, {{ user.username  }}
-                <a href="#!">Logout</a>
+                Hello, {{ user.username }}
+                <a href="{% url 'logout_user' %}">Logout</a>
             </span>
         {% else %}
             <div class="collapse navbar-collapse pull-right social-buttons" id="bs-example-navbar-collapse-3">
@@ -47,10 +49,57 @@
     </div>
 </nav>
 {% block main %}{% endblock %}
+
+<div class="container-fluid">
+    <div>
+        <form action="/upload" class="dropzone" drop-zone="" id="file-dropzone" enctype="multipart/form-data" method="post"></form>
+    </div>
+</div>
+
 <script src="{% static 'coffee-script.js' %}" type="text/javascript"></script>
 {#    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>#}
 <script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
 <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+<script src="{% static 'music-player/jquery-jplayer/jquery.jplayer.js' %}"></script>
+<script src="{% static 'music-player/ttw-music-player.js' %}"></script>
+<script src="{% static 'bootstrap/js/dropzone.js' %}"></script>
+{% block playlist %}{% endblock %}
+<script>
+    $(document).ready(function () {
+        $('#file-dropzone').dropzone({
+            url: "{% url 'file_upload_ajax' %}",
+            maxFilesize: 100,
+            paramName: "uploadfile",
+            maxThumbnailFilesize: 5,
+            init: function () {
+                this.on('success', function (file, json) {
+                });
+                this.on('addedfile', function (file) {
+                });
+                this.on('drop', function (file) {
+                    alert('file');
+                });
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        {#            var myDropzone = new Dropzone("div#drop", { url: "/file/post"})#}
+        {#            $("#drop").dropzone({ url: "{% url 'file_upload_ajax' %}" });#}
+        var description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id tortor nisi. Aenean sodales diam ac lacus elementum scelerisque. Suspendisse a dui vitae lacus faucibus venenatis vel id nisl. Proin orci ante, ultricies nec interdum at, iaculis venenatis nulla. ';
+        $('body').ttwMusicPlayer(playlist, {
+            autoPlay: false,
+            description: description,
+            ratingCallback: function (index, playlistItem, rating) {
+                console.log(playlistItem);
+            },
+            jPlayer: {
+                swfPath: '../music-player/jquery-jplayer' //You need to override the default swf path any time the directory structure changes
+            }
+        });
+    });
+</script>
 {% block js %}{% endblock %}
 </body>
 </html>

@@ -25,9 +25,6 @@ class SignInModelForm(forms.ModelForm):
         self.user_cache = None
         self.helper = FormHelper(self)
         self.helper.form_action = '/signin/'
-        # self.helper.form_method = 'POST'
-        # self.helper.label_class = 'col-lg-2'
-        # self.helper.field_class = 'col-lg-2'
         self.helper.layout = Layout('username', 'password', Submit('sign_in', 'Sign In'),)
 
     def clean(self):
