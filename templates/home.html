@@ -1,31 +1,6 @@
 {% extends 'index.html' %}
 {% load crispy_forms_tags %}
 {% block main %}
-    {% crispy audio_upload_form %}
-    {% for track in audio %}
-        <p>{{ track.artist }} - {{ track.title }}</p>
-        <audio controls preload="none">
-            <source src="{{ track.url }}" type="audio/mpeg">
-            Your browser does not support the audio element.
-        </audio>
-    {% endfor %}
+    {% include 'player.html' with list=audio %}
 {% endblock %}
-{% block js %}
-{% endblock %}
-{% block playlist %}
-    <script>
-        var playlist = [
-            {% for track in audio %}
-            {
-                mp3: '{{ track.url }}',
-{#                rating: 5,#}
-                title: '{{ track.title }}',
-                duration: '4:28',
-                artist: '{{ track.artist }}',
-                id: {{ track.id }}
-{#                cover: 'images/cover.jpg'#}
-            },
-            {% endfor %}
-        ];
-    </script>
-{% endblock %}
+

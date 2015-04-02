@@ -1,0 +1,39 @@
+{% load staticfiles %}
+
+<div id="play"></div>
+<script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
+<script src="{% static 'music-player/ttw-music-player.js' %}"></script>
+<script type="text/javascript">
+    var playlist = [
+            {% for track in list %}
+                {
+                mp3: '{{ track.url }}',
+{#                rating: 5,#}
+                title: '{{ track.title }}',
+                duration: '4:28',
+                artist: '{{ track.artist }}',
+                id: {{ track.id }}
+{#                cover: 'images/cover.jpg'#}
+            },
+            {% endfor %}
+        ]
+
+    $(document).ready(function () {
+
+        {#            var myDropzone = new Dropzone("div#drop", { url: "/file/post"})#}
+        {#            $("#drop").dropzone({ url: "{% url 'file_upload_ajax' %}" });#}
+        var description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id tortor nisi. Aenean sodales diam ac lacus elementum scelerisque. Suspendisse a dui vitae lacus faucibus venenatis vel id nisl. Proin orci ante, ultricies nec interdum at, iaculis venenatis nulla. ';
+        $('#play').ttwMusicPlayer(playlist, {
+            autoPlay: false,
+            description: description,
+            ratingCallback: function (index, playlistItem, rating) {
+                console.log(playlistItem);
+            },
+            jPlayer: {
+                swfPath: '../music-player/jquery-jplayer' //You need to override the default swf path any time the directory structure changes
+            }
+        });
+    });
+    </script>
+
+

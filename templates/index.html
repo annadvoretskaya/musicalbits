@@ -63,7 +63,7 @@
 <script src="{% static 'music-player/jquery-jplayer/jquery.jplayer.js' %}"></script>
 <script src="{% static 'music-player/ttw-music-player.js' %}"></script>
 <script src="{% static 'bootstrap/js/dropzone.js' %}"></script>
-{% block playlist %}{% endblock %}
+
 <script>
     $(document).ready(function () {
         $('#file-dropzone').dropzone({
@@ -79,23 +79,6 @@
                 this.on('drop', function (file) {
                     alert('file');
                 });
-            }
-        });
-    });
-</script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        {#            var myDropzone = new Dropzone("div#drop", { url: "/file/post"})#}
-        {#            $("#drop").dropzone({ url: "{% url 'file_upload_ajax' %}" });#}
-        var description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id tortor nisi. Aenean sodales diam ac lacus elementum scelerisque. Suspendisse a dui vitae lacus faucibus venenatis vel id nisl. Proin orci ante, ultricies nec interdum at, iaculis venenatis nulla. ';
-        $('body').ttwMusicPlayer(playlist, {
-            autoPlay: false,
-            description: description,
-            ratingCallback: function (index, playlistItem, rating) {
-                console.log(playlistItem);
-            },
-            jPlayer: {
-                swfPath: '../music-player/jquery-jplayer' //You need to override the default swf path any time the directory structure changes
             }
         });
     });
