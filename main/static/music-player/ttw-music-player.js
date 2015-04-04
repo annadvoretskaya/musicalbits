@@ -84,7 +84,7 @@
                             '<span class="title"></span>' +
                             '<span class="duration"></span>' +
                             '<span class="rating"></span>' +
-                            '<a href="#!" class="track-id" data-id=""><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>' +
+                            '<a href="#!" class="track-id" data-id=""><span class="glyphicon glyphicon-plus pull-right" aria-hidden="true"></span></a>' +
                             '<a href="#" class="buy not-active" target="_blank"></a>' +
                         '</li>',
                 ratingBar:'<span class="rating-level rating-bar"></span>'
