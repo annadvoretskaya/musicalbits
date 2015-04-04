@@ -23,6 +23,14 @@ def home(request):
         'audio': request.user.audio.all() if not request.user.is_anonymous() else []
     })
 
+@login_required
+def music(request):
+    return render(request, 'music.html', {
+        'user': request.user,
+        'request': request,
+        'audio': request.user.audio.all()
+    })
+
 
 def signin(request):
     sign_in_form = SignInModelForm()

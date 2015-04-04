@@ -65,22 +65,11 @@
             <li><a href="#">New</a></li>
           </ul>
         </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
-{#          <h1 class="page-header">Dashboard</h1>#}
-
-          <div class="row placeholders">
-              <div class="container-fluid">
-                <div>
-                    <form action="/upload" class="dropzone" drop-zone="" id="file-dropzone" enctype="multipart/form-data" method="post"></form>
-                </div>
-              </div>
-          </div>
-
-{#          <h2 class="sub-header">Section title</h2>#}
-                {% block main %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
       </div>
-    </div>
+</div>
+<div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 <script src="{% static 'holder.js' %}"></script>
