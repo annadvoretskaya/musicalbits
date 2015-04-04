@@ -16,6 +16,6 @@ span.rating {
     background : red;
 }
 
-.glyphonic-plus {
-    margin-top: 18px;
+.dropzone {
+    min-height: 150px !important;
 }

@@ -13,6 +13,7 @@ from main.models import Audio
 from dateutil.parser import parse
 import urllib
 from eyed3 import load
+from eyed3 import core
 
 
 def home(request):
@@ -95,11 +96,7 @@ def file_upload_ajax(request):
     file = request.FILES['uploadfile']
     if file:
         data = Dropbox().upload(file)
-        # filename, headers = urllib.urlretrieve(data['url'])
-        # print type(file)
         audiofile = load(file.temporary_file_path())
-        # print str(audiofile.tag.artist.encode('utf-8'))
-        # print type(audiofile.tag.artist.encode('utf-8'))
         Audio.objects.create(artist=audiofile.tag.artist,
                              title=audiofile.tag.title,
                              url=data['url'],
