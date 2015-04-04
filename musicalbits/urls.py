@@ -16,5 +16,5 @@ urlpatterns += patterns('main.views',
     url(r'^file/upload/$', 'file_upload', name='file_upload'),
     url(r'^file/upload/ajax/$', 'file_upload_ajax', name='file_upload_ajax'),
     url(r'^$', 'home', name='home'),
-
+    url(r'^music/', 'music', name='music'),
 )
