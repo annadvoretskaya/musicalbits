@@ -14,3 +14,26 @@ class Audio(models.Model):
     expires = models.DateField(blank=True, null=True, default=None)
     added_at = models.DateField(auto_now_add=True)
     user = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='audio')
+
+
+class Playlist(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True, default=True)
+    description = models.CharField(max_length=2000, blank=True, null=True, default=True)
+    user = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='playlist')
+    audio = models.ManyToManyField(Audio, null=True, blank=True, default=None, related_name='audios')
+
+
+class Like(models.Model):
+    user = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='likes')
+    playlist = models.ForeignKey(Playlist, null=True, blank=True, default=None, related_name='likes')
+
+
+class Teg(models.Model):
+    name = models.CharField(max_length=200, blank=True, null=True, default=True)
+    audio = models.ForeignKey(Audio, null=True, blank=True, default=True, related_name='tegs')
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=50, blank=True, null=True, default=True)
+    audio = models.ForeignKey(Audio, null=True, blank=True, default=True, related_name='genres')
+
