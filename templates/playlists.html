@@ -1,0 +1,23 @@
+{% extends '_layout.html' %}
+{% load static crispy_forms_tags %}
+
+{% block content %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
+        {#            {% include 'player.html' with list=audio %}#}
+        {% crispy form %}
+        {% if playlists %}
+            {% for playlist in playlists %}
+                <a href="{% url 'playlist_info' playlist.id %}" class="playlist">
+                    <div>
+                        {{ playlist.name }}
+                    </div>
+                    <div>
+                        {{ playlist.description }}
+                    </div>
+                </a>
+            {% endfor %}
+        {% else %}
+            Lorem ispum
+        {% endif %}
+    </div>
+{% endblock %}

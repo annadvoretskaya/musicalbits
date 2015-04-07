@@ -7,9 +7,9 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from forms import SignInModelForm, SignUpForm, AudioUploadForm
+from forms import SignInModelForm, SignUpForm, AudioUploadForm, CreatePlaylistForm
 from main.dropbox_api import Dropbox
-from main.models import Audio
+from main.models import Audio, Playlist
 from dateutil.parser import parse
 import urllib
 from eyed3 import load
@@ -31,6 +31,50 @@ def music(request):
         'request': request,
         'audio': request.user.audio.all()
     })
+
+@login_required
+def playlist(request):
+    form = CreatePlaylistForm()
+    if request.method == "POST":
+        form = CreatePlaylistForm(request.POST)
+        if form.is_valid():
+            form.save(user=request.user)
+    playlists = request.user.playlist.all()
+    return render(request, 'playlists.html', {'form': form, 'playlists': playlists})
+
+
+@login_required
+def playlist_info(request, id=None):
+    try:
+        pl = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        raise Http404
+    return render(request, 'playlist.html', {
+        'user': request.user,
+        'request': request,
+        'audio': pl.audio.all(),
+        'playlist': pl
+    })
+
+@login_required
+def playlist_edit(request, id=None):
+    try:
+        pl = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        raise Http404
+    else:
+        if request.user != pl.user:
+            raise Http404
+        if request.method == 'POST':
+            ids = request.POST.getlist('ids', None)
+            print ids
+            if ids is not None:
+                ids = [int(item) for item in ids]
+                pl.audio.clear()
+                tracks = Audio.objects.filter(id__in=ids)
+                pl.audio.add(*tracks)
+        return render(request, 'playlist_edit.html', {'audio': request.user.audio.all(), 'playlist': pl})
+
 
 
 def signin(request):
@@ -97,6 +141,9 @@ def file_upload_ajax(request):
     if file:
         data = Dropbox().upload(file)
         audiofile = load(file.temporary_file_path())
+        print dir(audiofile)
+        print '/////////////////////'
+        print dir(audiofile.tag)
         Audio.objects.create(artist=audiofile.tag.artist,
                              title=audiofile.tag.title,
                              url=data['url'],

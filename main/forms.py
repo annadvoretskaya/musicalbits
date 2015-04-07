@@ -1,8 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.forms.utils import ErrorList
-from models import ApplicationUser
-
+from models import ApplicationUser, Playlist
 
 from django.core import validators
 from crispy_forms.helper import FormHelper
@@ -111,3 +110,24 @@ class AudioUploadForm(forms.Form):
         )
 
 
+class CreatePlaylistForm(forms.ModelForm):
+    class Meta:
+        model = Playlist
+        fields = ('name', 'description')
+
+    def __init__(self, *args, **kwargs):
+        super(CreatePlaylistForm, self).__init__(*args, **kwargs)
+        self.user_cache = None
+        self.helper = FormHelper(self)
+        self.helper.layout = Layout(
+            Field('name'),
+            'description',
+            Submit('Create', 'create'),
+        )
+
+    def save(self, commit=True, user=None):
+        playlist = super(CreatePlaylistForm, self).save(commit)
+        if user:
+            playlist.user = user
+            playlist.save()
+        return playlist

@@ -19,3 +19,14 @@ span.rating {
 .dropzone {
     min-height: 150px !important;
 }
+
+.playlist {
+    display: block;
+}
+.playlist div:nth-child(1) {
+    background-color: red;
+}
+
+.playlist div {
+    display: inline-block;
+}
