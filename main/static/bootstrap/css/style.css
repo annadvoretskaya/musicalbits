@@ -24,9 +24,27 @@ span.rating {
     display: block;
 }
 .playlist div:nth-child(1) {
-    background-color: red;
+    font-weight: bolder;
+}
+
+.list {
+    margin-top: 20px;
+}
+
+.list {
+    margin-right: 100px;
+}
+
+.playlist div:nth-child(2) {
+    font-style: italic;
 }
 
 .playlist div {
     display: inline-block;
+    margin-right: 10px;
 }
+
+.playlistForm {
+    display: none;
+}
+

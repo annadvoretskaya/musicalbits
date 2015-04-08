@@ -7,6 +7,7 @@
     <title>MusicalBits</title>
     {#    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">#}
     <link href="{% static 'bootstrap/css/bootstrap-lumen.min.css' %}" rel="stylesheet">
+    <link href="{% static 'docs/css/iconFont.css' %}" rel="stylesheet">
     {#    <link href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}" rel="stylesheet">#}
     <link href="{% static 'bootstrap/css/style.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap/css/lavish-bootstrap.css' %}" rel="stylesheet">
@@ -63,6 +64,12 @@
             <li><a href="#">Hear this</a></li>
             <li><a href="#">Top playlists</a></li>
             <li><a href="#">New</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+            <li><a href=""><i class="fa fa-user fa-lg fa-fw"></i> {{ request.user }}</a>
+            </li>
+            <li><a href=""><i class="fa fa-music fa-lg fa-fw"></i> Playlists </a></li>
+            <li><a href=""><i class="fa fa-heart fa-lg fa-fw"></i> Favourite tracks </a></li>
           </ul>
         </div>
         {% block content %}{% endblock %}

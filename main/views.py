@@ -40,7 +40,7 @@ def playlist(request):
         if form.is_valid():
             form.save(user=request.user)
     playlists = request.user.playlist.all()
-    return render(request, 'playlists.html', {'form': form, 'playlists': playlists})
+    return render(request, 'playlists.html', {'request': request, 'form': form, 'playlists': playlists})
 
 
 @login_required
@@ -73,7 +73,7 @@ def playlist_edit(request, id=None):
                 pl.audio.clear()
                 tracks = Audio.objects.filter(id__in=ids)
                 pl.audio.add(*tracks)
-        return render(request, 'playlist_edit.html', {'audio': request.user.audio.all(), 'playlist': pl})
+        return render(request, 'playlist_edit.html', {'request': request, 'audio': request.user.audio.all(), 'playlist': pl})
 
 
 

@@ -119,6 +119,8 @@ class CreatePlaylistForm(forms.ModelForm):
         super(CreatePlaylistForm, self).__init__(*args, **kwargs)
         self.user_cache = None
         self.helper = FormHelper(self)
+        self.helper.form_id = 'create-playlist'
+        self.helper.form_class = 'playlistForm'
         self.helper.layout = Layout(
             Field('name'),
             'description',

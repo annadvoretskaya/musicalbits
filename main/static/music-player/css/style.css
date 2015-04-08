@@ -1,7 +1,9 @@
 
 
 .ttw-music-player {
-    width: 370px;
+    /*width: 370px;*/
+    width: 750px;
+    height: 200px;
     margin: 60px auto;
     font-family: 'Lato', arial, sans-serif;
 }
@@ -118,7 +120,8 @@
     -webkit-border-radius: 6px;
     background: transparent url(../images/player-bg.png) repeat 0 0 scroll;
     float: left;
-    margin: 12px 0 0 30px;
+    /*margin: 110px -220px*/
+    /*margin: 12px 0 0 30px;*/
 }
 
 .ttw-music-player .player-controls .main {

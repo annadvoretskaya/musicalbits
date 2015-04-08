@@ -22,7 +22,8 @@
 
         {#            var myDropzone = new Dropzone("div#drop", { url: "/file/post"})#}
         {#            $("#drop").dropzone({ url: "{% url 'file_upload_ajax' %}" });#}
-        var description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id tortor nisi. Aenean sodales diam ac lacus elementum scelerisque. Suspendisse a dui vitae lacus faucibus venenatis vel id nisl. Proin orci ante, ultricies nec interdum at, iaculis venenatis nulla. ';
+{#        var description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce id tortor nisi. Aenean sodales diam ac lacus elementum scelerisque. Suspendisse a dui vitae lacus faucibus venenatis vel id nisl. Proin orci ante, ultricies nec interdum at, iaculis venenatis nulla. ';#}
+        var description = '{{ playlist.description }}'
         $('#play').ttwMusicPlayer(playlist, {
             autoPlay: false,
             description: description,

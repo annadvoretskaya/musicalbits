@@ -1,23 +1,41 @@
 {% extends '_layout.html' %}
 {% load static crispy_forms_tags %}
+{% load staticfiles %}
 
 {% block content %}
+    <link href="{% static 'docs/css/iconFont.css' %}" rel="stylesheet">
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
-        {#            {% include 'player.html' with list=audio %}#}
+        <button class="btn btn-primary" id="icon-playlist"> Add playlist
+                <i class="icon-playlist on-right" ></i>
+        </button>
         {% crispy form %}
         {% if playlists %}
+            <ol class="list">
             {% for playlist in playlists %}
                 <a href="{% url 'playlist_info' playlist.id %}" class="playlist">
+                   <li>
                     <div>
                         {{ playlist.name }}
                     </div>
                     <div>
                         {{ playlist.description }}
                     </div>
+                   </li>
                 </a>
             {% endfor %}
+            </ol>
+
+
         {% else %}
             Lorem ispum
         {% endif %}
     </div>
+    <script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
+    <script>
+        $("#icon-playlist").click(function(){
+            $('#create-playlist').animate({
+                height: 'toggle'
+                });
+            })
+    </script>
 {% endblock %}
