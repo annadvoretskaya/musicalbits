@@ -1,0 +1,93 @@
+{#{% extends '_layout.html' %}#}
+{% load staticfiles %}
+
+<link href="{% static 'css/style.css' %}" rel="stylesheet"><style>
+    a { color: #888; text-decoration: none; }
+      #wrapper { width: 400px; margin: 40px auto; }
+
+      ol { padding: 0px; margin: 0px; list-style: decimal-leading-zero inside; color: #ccc; width: 460px; border-top: 1px solid #ccc; font-size: 0.9em; }
+      ol li { position: relative; margin: 0px; padding: 9px 2px 10px; border-bottom: 1px solid #ccc; cursor: pointer; }
+      ol li a { display: block; text-indent: -3.3ex; padding: 0px 0px 0px 20px; }
+      li.playing { color: #aaa; text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3); }
+      li.playing a { color: #000; }
+      li.playing:before { content: '♬'; width: 14px; height: 14px; padding: 3px; line-height: 14px; margin: 0px; position: absolute; left: -24px; top: 9px; color: #000; font-size: 13px; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2); }
+      @media screen and (max-device-width: 480px) {
+        #wrapper { position: relative; left: -3%; }
+      }
+</style>
+<div id="play">
+    <div id="wrapper">
+      <h1>{{ playlist.name }}</h1>
+        <h3>{{ playlist.description }}</h3>
+      <audio preload="none"></audio>
+      <ol id="track-list">
+          {% for track in audio %}
+            <li class="track track-{{ track.id }}">
+                <a href="#" data-src="{{ track.url }}">{{ track.name }}</a>
+                {% if user == track.owner %}
+                    <a href="#" class="delete-track" data-id="{{ track.id }}"><i class="fa fa-trash"></i> </a>
+                {% endif %}
+            </li>
+          {% endfor %}
+      </ol>
+    </div>
+</div>
+<script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
+<script src="{% static 'audiojs/audio.min.js' %}"></script>
+<script type="text/javascript">
+    $(function () {
+        // Setup the player to autoplay the next track
+        var a = audiojs.createAll({
+            trackEnded: function () {
+                var next = $('ol li.playing').next();
+                if (!next.length) next = $('ol li').first();
+                next.addClass('playing').siblings().removeClass('playing');
+                audio.load($('a', next).attr('data-src'));
+                audio.play();
+            }
+        });
+
+        // Load in the first track
+        var audio = a[0];
+        first = $('ol a').attr('data-src');
+        $('ol li').first().addClass('playing');
+        audio.load(first);
+
+        // Load in a track on click
+        $('ol li').click(function (e) {
+            e.preventDefault();
+            $(this).addClass('playing').siblings().removeClass('playing');
+            audio.load($('a', this).attr('data-src'));
+            audio.play();
+        });
+        // Keyboard shortcuts
+        $(document).keydown(function (e) {
+            var unicode = e.charCode ? e.charCode : e.keyCode;
+            // right arrow
+            if (unicode == 39) {
+                var next = $('li.playing').next();
+                if (!next.length) next = $('ol li').first();
+                next.click();
+                // back arrow
+            } else if (unicode == 37) {
+                var prev = $('li.playing').prev();
+                if (!prev.length) prev = $('ol li').last();
+                prev.click();
+                // spacebar
+            } else if (unicode == 32) {
+                audio.playPause();
+            }
+        });
+        $('.delete-track').on('click', function(){
+            id = $(this).data('id');
+            $.ajax({
+                url: "{% url 'file_delete_ajax' %}?id=" + id
+            }).done(function (data) {
+                $('.track-' + id).remove();
+            });
+{#            $('.track').length#}
+        });
+    });
+</script>
+
+

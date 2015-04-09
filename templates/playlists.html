@@ -10,21 +10,18 @@
         </button>
         {% crispy form %}
         {% if playlists %}
-            <ol class="list">
+            <div class="playlists">
             {% for playlist in playlists %}
                 <a href="{% url 'playlist_info' playlist.id %}" class="playlist">
-                   <li>
                     <div>
                         {{ playlist.name }}
                     </div>
                     <div>
-                        {{ playlist.description }}
+                        {{ playlist.track_count }}
                     </div>
-                   </li>
                 </a>
             {% endfor %}
-            </ol>
-
+            </div>
 
         {% else %}
             Lorem ispum

@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.urlresolvers import reverse
+from django.db.models import Count
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -21,7 +23,7 @@ def home(request):
         'user': request.user,
         'request': request,
         'audio_upload_form': AudioUploadForm(),
-        'audio': request.user.audio.all() if not request.user.is_anonymous() else []
+        'audio': request.user.audio.filter(deleted=False) if not request.user.is_anonymous() else []
     })
 
 @login_required
@@ -29,7 +31,7 @@ def music(request):
     return render(request, 'music.html', {
         'user': request.user,
         'request': request,
-        'audio': request.user.audio.all()
+        'audio': request.user.audio.filter(deleted=False)
     })
 
 @login_required
@@ -39,7 +41,7 @@ def playlist(request):
         form = CreatePlaylistForm(request.POST)
         if form.is_valid():
             form.save(user=request.user)
-    playlists = request.user.playlist.all()
+    playlists = request.user.playlist.all().annotate(track_count=Count('audio'))
     return render(request, 'playlists.html', {'request': request, 'form': form, 'playlists': playlists})
 
 
@@ -52,7 +54,7 @@ def playlist_info(request, id=None):
     return render(request, 'playlist.html', {
         'user': request.user,
         'request': request,
-        'audio': pl.audio.all(),
+        'audio': pl.audio.filter(deleted=False),
         'playlist': pl
     })
 
@@ -73,7 +75,12 @@ def playlist_edit(request, id=None):
                 pl.audio.clear()
                 tracks = Audio.objects.filter(id__in=ids)
                 pl.audio.add(*tracks)
-        return render(request, 'playlist_edit.html', {'request': request, 'audio': request.user.audio.all(), 'playlist': pl})
+            return redirect(reverse('playlist_info', kwargs={'id': id}))
+        return render(request, 'playlist_edit.html', {
+            'request': request,
+            'audio': request.user.audio.filter(deleted=False),
+            'playlist': pl
+        })
 
 
 
@@ -109,19 +116,14 @@ def signup(request):
 def file_upload(request):
     if request.method == 'POST':
         file = request.FILES['file']
-
         if file:
             data = Dropbox().upload(file)
-            # filename, headers = urllib.urlretrieve(data['url'])
-            # print type(file)
             audiofile = load(file.temporary_file_path())
-            # print str(audiofile.tag.artist.encode('utf-8'))
-            # print type(audiofile.tag.artist.encode('utf-8'))
             Audio.objects.create(artist=audiofile.tag.artist,
                                  title=audiofile.tag.title,
                                  url=data['url'],
                                  expires=parse(data['expires']),
-                                 user=request.user,
+                                 owner=request.user,
                                  path=data['path'])
 
             return redirect('home')
@@ -138,16 +140,37 @@ def logout_user(request):
 @csrf_exempt
 def file_upload_ajax(request):
     file = request.FILES['uploadfile']
+    context = {
+        "message": "ok"
+    }
     if file:
         data = Dropbox().upload(file)
         audiofile = load(file.temporary_file_path())
         print dir(audiofile)
         print '/////////////////////'
         print dir(audiofile.tag)
-        Audio.objects.create(artist=audiofile.tag.artist,
-                             title=audiofile.tag.title,
-                             url=data['url'],
-                             expires=parse(data['expires']),
-                             user=request.user,
-                             path=data['path'])
+        audio = Audio.objects.create(artist=audiofile.tag.artist,
+                                     title=audiofile.tag.title,
+                                     url=data['url'],
+                                     expires=parse(data['expires']),
+                                     owner=request.user,
+                                     path=data['path'])
+        request.user.audio.add(audio)
+        context['name'] = audio.name
+        context['url'] = audio.url
+        context['id'] = audio.id
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+@login_required
+@csrf_exempt
+def file_delete_ajax(request):
+    id = request.GET.get('id', None)
+    if not id:
+        raise Http404
+    track = Audio.objects.filter(id=id).first()
+    if track and track.owner != request.user:
+        raise Http404
+    track.deleted = True
+    track.save()
     return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")

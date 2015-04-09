@@ -6,7 +6,7 @@
         {% csrf_token %}
         {% for track in audio %}
             <div>
-                <input type="checkbox" value="{{ track.id }}" name="ids" {% if track in playlist.audio.allwor%}checked="checked" {% endif %}/> {{ track.name }}
+                <input type="checkbox" value="{{ track.id }}" name="ids" {% if track in playlist.audio.all%}checked="checked" {% endif %}/> {{ track.name }}
             </div>
         {% endfor %}
         <button type="submit" class="btn btn-primary social-buttons">Save</button>

@@ -23,20 +23,24 @@ span.rating {
 .playlist {
     display: block;
 }
-.playlist div:nth-child(1) {
-    font-weight: bolder;
+.playlists div:nth-child(1) {
+    font-size: xx-large;
+    min-width: 200px;
 }
 
-.list {
+.playlists {
     margin-top: 20px;
-}
-
-.list {
     margin-right: 100px;
+    font-size: x-large;
+
 }
 
-.playlist div:nth-child(2) {
+/*.list {*/
+/*}*/
+
+.playlists div:nth-child(2) {
     font-style: italic;
+    /*margin-left: 200px;*/
 }
 
 .playlist div {
@@ -47,4 +51,9 @@ span.rating {
 .playlistForm {
     display: none;
 }
+
+div .play-pause {
+    width: 40px !important;
+}
+
 

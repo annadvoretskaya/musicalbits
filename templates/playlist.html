@@ -4,6 +4,6 @@
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
         <h1>{{ playlist.name }}</h1>
         <a href="{% url 'playlist_edit' playlist.id %}" class="btn btn-primary">Edit</a>
-        {% include 'player.html' with list=audio playlist=playlist %}
+        {% include '_new_player.html' with list=audio playlist=playlist %}
     </div>
 {% endblock %}

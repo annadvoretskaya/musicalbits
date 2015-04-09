@@ -3,7 +3,7 @@ from django.db import models
 
 
 class ApplicationUser(AbstractUser):
-    pass
+    audio = models.ManyToManyField("Audio")
 
 
 class Audio(models.Model):
@@ -13,7 +13,8 @@ class Audio(models.Model):
     path = models.CharField(max_length=1000, blank=True, null=True, default=True)
     expires = models.DateField(blank=True, null=True, default=None)
     added_at = models.DateField(auto_now_add=True)
-    user = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='audio')
+    owner = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='tracks')
+    deleted = models.BooleanField(default=False)
 
     @property
     def name(self):
