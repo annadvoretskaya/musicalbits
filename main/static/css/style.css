@@ -56,4 +56,8 @@ div .play-pause {
     width: 40px !important;
 }
 
+ol li a {
+    display: inline !important;
+}
+
 

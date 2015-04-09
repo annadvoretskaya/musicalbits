@@ -82,6 +82,7 @@
 <div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="{% static 'audiojs/audio.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 <script src="{% static 'js/holder.js' %}"></script>
 <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
@@ -103,7 +104,24 @@
                             "<a href='#' data-src='" + json.url + "'>" + json.name + "</a>" +
                             "<a href='#' class='delete-track' data-id='" + json.id + "'><i class='fa fa-trash'></i> </a></li>"
                     $('#track-list').append(track);
+                    $('.track a').click(function (e) {
+                        e.preventDefault();
+                        $(this).parent().addClass('playing').siblings().removeClass('playing');
+                        audio.load($(this).attr('data-src'));
+                        audio.play();
+                    });
+                    $('.delete-track').on('click', function (event) {
+                        event.preventDefault();
+                        id = $(this).data('id');
+                        $.ajax({
+                            url: "{% url 'file_delete_ajax' %}?id=" + id
+                        }).done(function (data) {
+                            $('.track-' + id).remove();
+                        });
+                        {#            $('.track').length#}
+                    });
                 });
+
                 this.on('addedfile', function (file) {
                 });
                 this.on('drop', function (file) {
