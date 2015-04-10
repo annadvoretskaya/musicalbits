@@ -21,4 +21,6 @@ urlpatterns += patterns('main.views',
     url(r'^playlist/$', 'playlist', name='playlist'),
     url(r'^playlist/(?P<id>\w+)/$', 'playlist_info', name='playlist_info'),
     url(r'^playlist/(?P<id>\w+)/edit/$', 'playlist_edit', name='playlist_edit'),
+    url(r'^playlist/(?P<id>\w+)/like/$', 'playlist_like_ajax', name='playlist_like_ajax'),
+    url(r'^playlist/(?P<id>\w+)/delete/$', 'playlist_delete', name='playlist_delete'),
 )

@@ -60,4 +60,7 @@ ol li a {
     display: inline !important;
 }
 
+.player {
+    display: none;
+}
 

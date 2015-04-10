@@ -17,3 +17,8 @@ class Dropbox(object):
         context = self.client.media(path)
         context['path'] = path
         return context
+
+    def get_abs_url(self, path):
+        tmp = self.client.media(path)
+        print tmp
+        return tmp['url']

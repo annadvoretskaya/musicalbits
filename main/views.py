@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from forms import SignInModelForm, SignUpForm, AudioUploadForm, CreatePlaylistForm
 from main.dropbox_api import Dropbox
-from main.models import Audio, Playlist
+from main.models import Audio, Playlist, Like
 from dateutil.parser import parse
 import urllib
 from eyed3 import load
@@ -41,7 +41,7 @@ def playlist(request):
         form = CreatePlaylistForm(request.POST)
         if form.is_valid():
             form.save(user=request.user)
-    playlists = request.user.playlist.all().annotate(track_count=Count('audio'))
+    playlists = request.user.playlist.all()
     return render(request, 'playlists.html', {'request': request, 'form': form, 'playlists': playlists})
 
 
@@ -55,7 +55,8 @@ def playlist_info(request, id=None):
         'user': request.user,
         'request': request,
         'audio': pl.audio.filter(deleted=False),
-        'playlist': pl
+        'playlist': pl,
+        'liked': bool(Like.objects.filter(user=request.user, playlist=pl))
     })
 
 @login_required
@@ -82,6 +83,33 @@ def playlist_edit(request, id=None):
             'playlist': pl
         })
 
+
+@login_required
+@csrf_exempt
+def playlist_like_ajax(request, id=None):
+    try:
+        pl = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        raise Http404
+    else:
+        like, created = Like.objects.get_or_create(user=request.user, playlist=pl)
+        if not created:
+            like.delete()
+        return HttpResponse(json.dumps({'liked': created}), content_type="application/json")
+
+
+
+@login_required
+def playlist_delete(request, id=None):
+    try:
+        pl = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        raise Http404
+    else:
+        if request.user != pl.user:
+            raise Http404
+        pl.delete()
+        return redirect('playlist')
 
 
 def signin(request):

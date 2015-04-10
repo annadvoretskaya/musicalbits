@@ -3,7 +3,36 @@
 {% block content %}
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
         <h1>{{ playlist.name }}</h1>
+    {% if request.user == playlist.user and not request.user.is_anonymous %}
         <a href="{% url 'playlist_edit' playlist.id %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'playlist_delete' playlist.id %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+        <a href="#!" data-url="{% url 'playlist_like_ajax' playlist.id %}" class="btn btn-info btn-like">
+            {% if liked %}
+            Unlike
+            {% else %}
+            Like
+            {% endif %}
+        </a>
         {% include '_new_player.html' with list=audio playlist=playlist %}
     </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $('.btn-like').on('click', function(){
+            var $this = $(this);
+            $.ajax({
+                url: $(this).data('url')
+            }).done(function(data){
+                console.log(data);
+                var like_text = 'Like';
+                if(data.liked) {
+                    like_text = 'Unlike';
+                } else {
+                    like_text = 'Like';
+                }
+                $this.html(like_text);
+            });
+        });
+    </script>
 {% endblock %}
