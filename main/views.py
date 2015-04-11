@@ -45,6 +45,20 @@ def playlist(request):
     return render(request, 'playlists.html', {'request': request, 'form': form, 'playlists': playlists})
 
 
+def playlist_popular(request):
+    print Playlist.objects.all().annotate(num_likes=Count('likes')).order_by('-num_likes')
+    return render(request, 'playlist_popular.html', {
+        'request': request,
+        'playlists': Playlist.objects.all().annotate(num_likes=Count('likes')).order_by('-num_likes')
+    })
+
+def new_track(request):
+    return render(request, 'new_track.html', {
+        'request': request,
+        'tracks': Audio.objects.all().order_by('')
+    })
+
+
 @login_required
 def playlist_info(request, id=None):
     try:
