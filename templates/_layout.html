@@ -63,9 +63,9 @@
         <div class="col-sm-3 col-md-2 sidebar" style="background: #BEB6BB">
             <ul class="nav nav-sidebar">
                 <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Hear this</a></li>
+{#                <li><a href="#">Hear this</a></li>#}
                 <li><a href="{% url 'playlist_popular' %}">Top playlists</a></li>
-                <li><a href="#">New</a></li>
+                <li><a href="{% url 'new_track' %}">New</a></li>
             </ul>
             {% if user and not user.is_anonymous %}
                 <ul class="nav nav-sidebar">

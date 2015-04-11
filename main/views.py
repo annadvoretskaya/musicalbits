@@ -42,7 +42,9 @@ def playlist(request):
         if form.is_valid():
             form.save(user=request.user)
     playlists = request.user.playlist.all()
-    return render(request, 'playlists.html', {'request': request, 'form': form, 'playlists': playlists})
+    return render(request, 'playlists.html', {
+        'request': request, 'form': form, 'playlists': playlists
+    })
 
 
 def playlist_popular(request):
@@ -53,9 +55,11 @@ def playlist_popular(request):
     })
 
 def new_track(request):
+    pl = Audio.objects.filter(deleted=False).all().order_by('last_updated')
+    print pl
     return render(request, 'new_track.html', {
         'request': request,
-        'tracks': Audio.objects.all().order_by('')
+        'audio': pl
     })
 
 

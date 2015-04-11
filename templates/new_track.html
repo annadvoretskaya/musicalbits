@@ -1,0 +1,13 @@
+{% extends '_layout.html' %}
+{% block content %}
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
+        {% for track in audio %}
+            <a href="#">
+                <div>
+                    {{ track.name }}
+                </div>
+            </a>
+        {% endfor %}
+{#    {% include '_new_player.html' with list=tracks %}#}
+    </div>
+{% endblock %}

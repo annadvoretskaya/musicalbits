@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -16,6 +17,7 @@ class Audio(models.Model):
     owner = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='tracks')
     deleted = models.BooleanField(default=False)
     last_updated = models.DateTimeField(auto_now=True, default=None)
+    # download_date = models.DateTimeField(auto_now_add=True, blank=True)
 
     @property
     def name(self):
