@@ -246,10 +246,29 @@ def playlist_sort(request):
     pl_id = request.GET.get('id', None)
     ids = request.GET.get('ids', None)
     ids = ids.split(',')
-    if not pl_id and ids:
+    if not pl_id or not ids:
         raise Http404
     for index, id in enumerate(ids):
         con = AudioConnection.objects.filter(playlist__id=pl_id, audio__id=id).first()
         con.number = index
         con.save()
     return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")
+
+
+@login_required
+@csrf_exempt
+def playlist_edit_ajax(request):
+    pl_id = request.GET.get('id', None)
+    name = request.GET.get('name', None)
+    desc = request.GET.get('desc', None)
+    if not pl_id:
+        raise Http404
+    pl = Playlist.objects.filter(id=pl_id).first()
+    if not pl:
+        raise Http404
+    if name:
+        pl.name = name
+    if desc:
+        pl.description = desc
+    pl.save()
+    return HttpResponse(json.dumps({'message': 'ok', 'desc': pl.description_html}), content_type="application/json")

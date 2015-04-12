@@ -78,9 +78,17 @@
 </script>
 <div id="play">
     <div id="wrapper">
-        <h1>{{ playlist.name }}</h1>
+        <h1 id="pl_name">{{ playlist.name }}</h1>
 
-        <h3>{{ playlist.description_html|safe }}</h3>
+        <div class="form-group" id="pl_name_input" style="display: none">
+            <input type="text" class="form-control" id="new_pl_name" value="{{ playlist.name }}">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+        <h3 id="pl_desc">{{ playlist.description_html|safe }}</h3>
+        <div class="form-group" id="pl_desc_input" style="display: none">
+            <textarea class="form-control textarea" id="new_pl_desc">{{ playlist.description }}</textarea>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
         <audio preload="none"></audio>
         <ol id="track-list">
             {% for track in audio %}
@@ -105,6 +113,37 @@
 <script src="{% static 'audiojs/audio.min.js' %}"></script>
 <script type="text/javascript">
     $(function () {
+        $("#pl_name").on('click', function() {
+            $(this).hide();
+            $('#pl_name_input').show();
+        });
+        $("#pl_desc").on('click', function() {
+            $(this).hide();
+            $('#pl_desc_input').show();
+        });
+        $('#pl_name_input button').on('click', function() {
+            var name = $('#new_pl_name').val();
+            $.ajax({
+                url: "{% url 'playlist_edit_ajax' %}?id={{ playlist.id }}&name=" + name
+            }).done(function (data) {
+                $('#pl_name_input').hide();
+                $('#pl_name').html(name);
+                $('#pl_name').show();
+            });
+
+        });
+        $('#pl_desc_input button').on('click', function() {
+            var desc = $('#new_pl_desc').val();
+            $.ajax({
+                url: "{% url 'playlist_edit_ajax' %}?id={{ playlist.id }}",
+                data: {"desc": desc}
+            }).done(function (data) {
+                $('#pl_desc_input').hide();
+                $('#pl_desc').html(data.desc);
+                $('#pl_desc').show();
+            });
+
+        });
         // Setup the player to autoplay the next track
         var a = audiojs.createAll({
             trackEnded: function () {

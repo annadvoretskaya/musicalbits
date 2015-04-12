@@ -23,7 +23,7 @@ span.rating {
 .playlist {
     display: block;
     border-bottom: 2px solid;
-    height: 50px;
+    min-height: 50px;
     color: #8E6C6E;
 }
 
@@ -96,5 +96,19 @@ ol li a {
 
 .star-rating {
     display: inline;
+}
+
+.form-control {
+    display: inline;
+    width: 75%;
+}
+
+#pl_name, #pl_desc {
+    cursor: pointer;
+}
+
+.textarea {
+    width: 110%;
+    min-height: 150px;
 }
 
