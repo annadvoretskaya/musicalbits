@@ -40,7 +40,7 @@ class Playlist(models.Model):
 
     def save(self, **kwargs):
         self.description_html = markdown(self.description)
-        super(Playlist, self).save(**kwargs)
+        super(Playlist, self).save(**kwargs )
 
 
 class AudioConnection(models.Model):

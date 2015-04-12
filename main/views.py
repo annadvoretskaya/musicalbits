@@ -272,3 +272,22 @@ def playlist_edit_ajax(request):
         pl.description = desc
     pl.save()
     return HttpResponse(json.dumps({'message': 'ok', 'desc': pl.description_html}), content_type="application/json")
+
+
+@login_required
+@csrf_exempt
+def track_edit_ajax(request):
+    id = request.GET.get('id')
+    if not id:
+        raise Http404
+    track = Audio.objects.filter(id=id).first()
+    if not track:
+        raise Http404
+    artist = request.GET.get('artist')
+    title = request.GET.get('title')
+    if artist:
+        track.artist = artist
+    if title:
+        track.title = title
+    track.save()
+    return HttpResponse(json.dumps({'message': 'ok', 'title': track.title, 'artist': track.artist}), content_type="application/json")

@@ -112,3 +112,14 @@ ol li a {
     min-height: 150px;
 }
 
+.modal-dialog {
+    margin-left: -20% !important;
+}
+
+.modal-content {
+    padding: 10px 10px;
+}
+
+.modal-content label {
+    min-width: 50px;
+}

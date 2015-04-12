@@ -68,13 +68,13 @@
     }
 </style>
 <script>
-        function changeRating(value, id) {
-            $.ajax({
-                url: "{% url 'rate_track' %}?id=" + id + "&value=" + value
-            }).done(function (data) {
-                console.log(data);
-            });
-        }
+    function changeRating(value, id) {
+        $.ajax({
+            url: "{% url 'rate_track' %}?id=" + id + "&value=" + value
+        }).done(function (data) {
+            console.log(data);
+        });
+    }
 </script>
 <div id="play">
     <div id="wrapper">
@@ -85,6 +85,7 @@
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
         <h3 id="pl_desc">{{ playlist.description_html|safe }}</h3>
+
         <div class="form-group" id="pl_desc_input" style="display: none">
             <textarea class="form-control textarea" id="new_pl_desc">{{ playlist.description }}</textarea>
             <button type="submit" class="btn btn-primary">Save</button>
@@ -93,7 +94,7 @@
         <ol id="track-list">
             {% for track in audio %}
                 <li class="track track-{{ track.id }}" id="{{ track.id }}">
-                    <a href="#" data-src="{{ track.url }}">{{ track.name }}</a>
+                    <a href="#" data-src="{{ track.url }}" class="track">{{ track.name }}</a>
                     <input class="rating form-control"
                            data-min="0"
                            data-max="5"
@@ -102,26 +103,49 @@
                            onchange="changeRating(this.value, {{ track.id }})"
                            {% if track.rating %}value="{{ track.rating }}"{% endif %}/>
                     {% if user == track.owner %}
-                        <a href="#" class="delete-track" data-id="{{ track.id }}"><i class="fa fa-trash"></i> </a>
+                        <button href="#" class="edit-track" data-id="{{ track.id }}"
+                                data-id="{{ track.id }}"
+                                data-artist="{{ track.artist }}"
+                                data-title="{{ track.title }}"><i class="fa fa-pencil"></i></button>
+                        <button href="#" class="delete-track" data-id="{{ track.id }}"><i class="fa fa-trash"></i>
+                        </button>
                     {% endif %}
                 </li>
+
             {% endfor %}
         </ol>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Artist</label>
+                    <input type="text" class="form-control" id="artist">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Title</label>
+                    <input type="text" class="form-control" id="title">
+                </div>
+                <input type="hidden" id="track-id"/>
+                <button type="submit" class="btn btn-primary" id="save-track">Save</button>
+        </div>
     </div>
 </div>
 <script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
 <script src="{% static 'audiojs/audio.min.js' %}"></script>
 <script type="text/javascript">
     $(function () {
-        $("#pl_name").on('click', function() {
+        $("#pl_name").on('click', function () {
             $(this).hide();
             $('#pl_name_input').show();
         });
-        $("#pl_desc").on('click', function() {
+        $("#pl_desc").on('click', function () {
             $(this).hide();
             $('#pl_desc_input').show();
         });
-        $('#pl_name_input button').on('click', function() {
+        $('#pl_name_input button').on('click', function () {
             var name = $('#new_pl_name').val();
             $.ajax({
                 url: "{% url 'playlist_edit_ajax' %}?id={{ playlist.id }}&name=" + name
@@ -132,7 +156,7 @@
             });
 
         });
-        $('#pl_desc_input button').on('click', function() {
+        $('#pl_desc_input button').on('click', function () {
             var desc = $('#new_pl_desc').val();
             $.ajax({
                 url: "{% url 'playlist_edit_ajax' %}?id={{ playlist.id }}",
@@ -199,9 +223,34 @@
             });
 
         });
+        $('.edit-track').on('click', function (event) {
+            $('.modal').modal('show');
+            var id = $(this).data('id');
+            var artist = $(this).data('artist');
+            var title = $(this).data('title');
+            $('#track-id').val(id);
+            $('#artist').val(artist);
+            $('#title').val(title);
+        });
+        $('#save-track').on('click', function(){
+            $.ajax({
+                url: "{% url 'track_edit_ajax' %}",
+                data: {
+                    id: $('#track-id').val(),
+                    artist: $('#artist').val(),
+                    title: $('#title').val()
+                }
+            }).done(function (data) {
+                $($('li.track-' + $('#track-id').val()).children()[0]).html(data.artist + ' - ' + data.title);
+                var tmp = $('.track-' + $('#track-id').val() + ' .edit-track');
+                tmp.attr('data-artist', data.artist);
+                tmp.attr('data-title', data.title);
+                $('.modal').modal('hide');
+            });
+        });
         $('#track-list').sortable({
-            stop: function( event, ui ) {
-                var ids = $("#track-list").sortable( "toArray" );
+            stop: function (event, ui) {
+                var ids = $("#track-list").sortable("toArray");
                 $.ajax({
                     url: "{% url 'playlist_sort' %}?id=" + "{{ playlist.id }}&ids=" + ids
                 }).done(function (data) {
@@ -209,7 +258,7 @@
                 });
             }
         });
-{#        $("#track-list").disableSelection();#}
+        {#        $("#track-list").disableSelection();#}
     });
 </script>
 
