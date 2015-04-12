@@ -80,7 +80,7 @@
     <div id="wrapper">
         <h1>{{ playlist.name }}</h1>
 
-        <h3>{{ playlist.description }}</h3>
+        <h3>{{ playlist.description_html|safe }}</h3>
         <audio preload="none"></audio>
         <ol id="track-list">
             {% for track in audio %}

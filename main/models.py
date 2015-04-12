@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from markdown import markdown
 
 
 class ApplicationUser(AbstractUser):
@@ -32,9 +33,14 @@ class Playlist(models.Model):
     description = models.TextField(blank=True, null=True, default=None)
     user = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='playlist')
     audio = models.ManyToManyField(Audio, through='AudioConnection')
+    description_html = models.TextField(editable=False)
 
     def __unicode__(self):
         return self.name
+
+    def save(self, **kwargs):
+        self.description_html = markdown(self.description)
+        super(Playlist, self).save(**kwargs)
 
 
 class AudioConnection(models.Model):
