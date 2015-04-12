@@ -5,13 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from forms import SignInModelForm, SignUpForm, AudioUploadForm, CreatePlaylistForm
 from main.dropbox_api import Dropbox
-from main.models import Audio, Playlist, Like
+from main.models import Audio, Playlist, Like, AudioRating, AudioConnection
 from dateutil.parser import parse
 import urllib
 from eyed3 import load
@@ -23,7 +23,7 @@ def home(request):
         'user': request.user,
         'request': request,
         'audio_upload_form': AudioUploadForm(),
-        'audio': request.user.audio.filter(deleted=False) if not request.user.is_anonymous() else []
+        'audio': request.user.audio.filter(deleted=False).annotate(rating=Avg('ratings__value')) if not request.user.is_anonymous() else []
     })
 
 @login_required
@@ -31,7 +31,7 @@ def music(request):
     return render(request, 'music.html', {
         'user': request.user,
         'request': request,
-        'audio': request.user.audio.filter(deleted=False)
+        'audio': request.user.audio.filter(deleted=False).annotate(rating=Avg('ratings__value'))
     })
 
 @login_required
@@ -43,7 +43,9 @@ def playlist(request):
             form.save(user=request.user)
     playlists = request.user.playlist.all()
     return render(request, 'playlists.html', {
-        'request': request, 'form': form, 'playlists': playlists
+        'request': request,
+        'form': form,
+        'playlists': playlists
     })
 
 
@@ -72,7 +74,7 @@ def playlist_info(request, id=None):
     return render(request, 'playlist.html', {
         'user': request.user,
         'request': request,
-        'audio': pl.audio.filter(deleted=False),
+        'audio': pl.audio.filter(deleted=False).annotate(rating=Avg('ratings__value')).order_by('audioconnection__number'),
         'playlist': pl,
         'liked': bool(Like.objects.filter(user=request.user, playlist=pl))
     })
@@ -93,7 +95,8 @@ def playlist_edit(request, id=None):
                 ids = [int(item) for item in ids]
                 pl.audio.clear()
                 tracks = Audio.objects.filter(id__in=ids)
-                pl.audio.add(*tracks)
+                for track in tracks:
+                    AudioConnection.objects.create(playlist=pl, audio=track)
             return redirect(reverse('playlist_info', kwargs={'id': id}))
         return render(request, 'playlist_edit.html', {
             'request': request,
@@ -219,4 +222,34 @@ def file_delete_ajax(request):
         raise Http404
     track.deleted = True
     track.save()
+    return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")
+
+
+@login_required
+@csrf_exempt
+def rate_track(request):
+    id = request.GET.get('id', None)
+    value = request.GET.get('value', None)
+    user = request.user
+    audio = Audio.objects.filter(id=id).first()
+    if not audio:
+        raise Http404
+    rating, _ = AudioRating.objects.get_or_create(user=user, audio=audio)
+    rating.value = value
+    rating.save()
+    return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")
+
+
+@login_required
+@csrf_exempt
+def playlist_sort(request):
+    pl_id = request.GET.get('id', None)
+    ids = request.GET.get('ids', None)
+    ids = ids.split(',')
+    if not pl_id and ids:
+        raise Http404
+    for index, id in enumerate(ids):
+        con = AudioConnection.objects.filter(playlist__id=pl_id, audio__id=id).first()
+        con.number = index
+        con.save()
     return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")

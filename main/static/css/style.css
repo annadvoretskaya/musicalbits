@@ -90,3 +90,11 @@ ol li a {
     display: none;
 }
 
+.star-rating .caption, .star-rating .clear-rating {
+    display: none;
+}
+
+.star-rating {
+    display: inline;
+}
+

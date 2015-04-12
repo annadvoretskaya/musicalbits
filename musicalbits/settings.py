@@ -130,3 +130,7 @@ djcelery.setup_loader()
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 BROKER_TRANSPORT = "django"
 CELERY_DISABLE_RATE_LIMITS = True
+
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler"
+]

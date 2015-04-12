@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/4.2.1/bootstrap-social.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/dropzone/3.8.4/css/dropzone.css">
     <script src="{% static 'js/ie-emulation-modes-warning.js' %}"></script>
+    <link href="{% static 'css/star-rating.min.css' %}" rel="stylesheet">
+
 </head>
 
 <nav class="navbar navbar-inverse navbar-fixed-top " style="background: #574450">
@@ -82,17 +84,20 @@
 <div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <script src="{% static 'audiojs/audio.min.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 <script src="{% static 'js/holder.js' %}"></script>
+<script src="{% static 'js/star-rating.min.js' %}"></script>
 <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
 <script src="{% static 'js/coffee-script.js' %}" type="text/javascript"></script>
-<script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>
+{#<script src="{% static 'jquery-ui-1.11.4.custom/external/jquery/jquery.js' %}" type="text/javascript"></script>#}
 <script src="{% static 'bootstrap/js/dropzone.js' %}"></script>
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" preserveAspectRatio="none" style="visibility: hidden; position: absolute; top: -100%; left: -100%;"><defs></defs><text x="0" y="10" style="font-weight:bold;font-size:10pt;font-family:Arial, Helvetica, Open Sans, sans-serif;dominant-baseline:middle">200x200</text></svg>
 
 <script>
     $(document).ready(function () {
+        Dropzone.autoDiscover = false;
         $('#file-dropzone').dropzone({
             url: "{% url 'file_upload_ajax' %}",
             maxFilesize: 100,
