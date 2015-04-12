@@ -25,7 +25,7 @@
                         {{ playlist.name }}
                     </div>
                     <div>
-                        {{ playlist.description }}
+                        {{ playlist.description_html|safe }}
                     </div>
                 </a>
             {% endfor %}

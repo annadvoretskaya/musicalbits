@@ -40,14 +40,38 @@ class Migration(migrations.Migration):
             name='Audio',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('artist', models.CharField(default=True, max_length=100, null=True, blank=True)),
-                ('title', models.CharField(default=True, max_length=100, null=True, blank=True)),
+                ('artist', models.CharField(default=None, max_length=100, null=True, blank=True)),
+                ('title', models.CharField(default=None, max_length=100, null=True, blank=True)),
                 ('url', models.URLField(max_length=1000)),
                 ('path', models.CharField(default=True, max_length=1000, null=True, blank=True)),
                 ('expires', models.DateField(default=None, null=True, blank=True)),
                 ('added_at', models.DateField(auto_now_add=True)),
                 ('deleted', models.BooleanField(default=False)),
+                ('last_updated', models.DateTimeField(default=None, auto_now=True)),
                 ('owner', models.ForeignKey(related_name='tracks', default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AudioConnection',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('number', models.SmallIntegerField(default=0, null=True, blank=True)),
+                ('audio', models.ForeignKey(to='main.Audio')),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='AudioRating',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('value', models.SmallIntegerField(default=0)),
+                ('audio', models.ForeignKey(related_name='ratings', to='main.Audio')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -58,7 +82,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50)),
-                ('audio', models.ForeignKey(related_name='genres', default=True, blank=True, to='main.Audio', null=True)),
+                ('audio', models.ForeignKey(related_name='genres', default=None, blank=True, to='main.Audio', null=True)),
             ],
             options={
             },
@@ -78,8 +102,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100)),
-                ('description', models.TextField(default=True, null=True, blank=True)),
-                ('audio', models.ManyToManyField(default=None, to='main.Audio', null=True, blank=True)),
+                ('description', models.TextField(default=None, null=True, blank=True)),
+                ('audio', models.ManyToManyField(to='main.Audio', through='main.AudioConnection')),
                 ('user', models.ForeignKey(related_name='playlist', default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
@@ -91,7 +115,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
-                ('audio', models.ForeignKey(related_name='tags', default=True, blank=True, to='main.Audio', null=True)),
+                ('audio', models.ForeignKey(related_name='tags', default=None, blank=True, to='main.Audio', null=True)),
             ],
             options={
             },
@@ -107,6 +131,12 @@ class Migration(migrations.Migration):
             model_name='like',
             name='user',
             field=models.ForeignKey(related_name='likes', to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='audioconnection',
+            name='playlist',
+            field=models.ForeignKey(to='main.Playlist'),
             preserve_default=True,
         ),
         migrations.AddField(

@@ -2,7 +2,6 @@
 
 {% block content %}
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
-        <h1>{{ playlist.name }}</h1>
     {% if request.user == playlist.user and not request.user.is_anonymous %}
         <a href="{% url 'playlist_edit' playlist.id %}" class="btn btn-primary">Edit</a>
         <a href="{% url 'playlist_delete' playlist.id %}" class="btn btn-danger">Delete</a>

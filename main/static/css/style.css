@@ -23,7 +23,7 @@ span.rating {
 .playlist {
     display: block;
     border-bottom: 2px solid;
-    height: 50px;
+    min-height: 50px;
     color: #8E6C6E;
 }
 
@@ -90,3 +90,36 @@ ol li a {
     display: none;
 }
 
+.star-rating .caption, .star-rating .clear-rating {
+    display: none;
+}
+
+.star-rating {
+    display: inline;
+}
+
+.form-control {
+    display: inline;
+    width: 75%;
+}
+
+#pl_name, #pl_desc {
+    cursor: pointer;
+}
+
+.textarea {
+    width: 110%;
+    min-height: 150px;
+}
+
+.modal-dialog {
+    margin-left: -20% !important;
+}
+
+.modal-content {
+    padding: 10px 10px;
+}
+
+.modal-content label {
+    min-width: 50px;
+}

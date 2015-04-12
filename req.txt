@@ -12,7 +12,6 @@ django-crispy-forms
 dropbox
 django-tastypie
 python-dateutil
-eyed3
-rabbitmq-server
 celery
 django-celery
+markdown
