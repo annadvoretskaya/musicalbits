@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from forms import SignInModelForm, SignUpForm, AudioUploadForm, CreatePlaylistForm
 from main.dropbox_api import Dropbox
-from main.models import Audio, Playlist, Like, AudioRating, AudioConnection
+from main.models import Audio, Playlist, Like, AudioRating, AudioConnection, ApplicationUser
 from dateutil.parser import parse
 import urllib
 from eyed3 import load
@@ -72,6 +72,13 @@ def new_track(request):
     return render(request, 'new_track.html', {
         'request': request,
         'audio': pl
+    })
+
+
+def users(request):
+    return render(request, 'users.html', {
+        'request': request,
+        'users': ApplicationUser.objects.all()
     })
 
 

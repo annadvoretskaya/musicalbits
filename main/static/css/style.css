@@ -123,3 +123,7 @@ ol li a {
 .modal-content label {
     min-width: 50px;
 }
+
+.users {
+    display: block;
+}

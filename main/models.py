@@ -2,10 +2,18 @@ import datetime
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from markdown import markdown
+from django.utils.translation import ugettext_lazy as _
 
 
 class ApplicationUser(AbstractUser):
     audio = models.ManyToManyField("Audio")
+
+    @property
+    def name(self):
+        return '%s  %s' % (self.first_name, self.last_name)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Audio(models.Model):

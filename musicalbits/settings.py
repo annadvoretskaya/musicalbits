@@ -83,6 +83,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
+
 ROOT_URLCONF = 'musicalbits.urls'
 
 WSGI_APPLICATION = 'musicalbits.wsgi.application'
