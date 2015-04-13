@@ -1,12 +1,28 @@
 {% extends '_layout.html' %}
 {% block content %}
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
-    {% for playlist in playlists %}
-        <div class="playlists">
-        <a href="{% url 'playlist_info' playlist.id %}" class="playlist">
-            <div>{{ playlist.name }}</div>
-        </a>
+        <div class="table-header">
+            <div>
+                #
+            </div>
+            <div>
+                Playlist
+            </div>
+            <div>
+                Likes
+            </div>
         </div>
-    {% endfor %}
+        <ol>
+        {% for playlist in playlists %}
+            <div class="playlists">
+                <li style="min-width: 125px">
+                    <a href="{% url 'playlist_info' playlist.id %}" class="pop-playlist" id="link">
+                        <div>{{ playlist.name }}</div>
+                        <div>{{ playlist.num_likes }}</div>
+                    </a>
+                </li>
+            </div>
+        {% endfor %}
+        </ol>
     </div>
 {% endblock %}

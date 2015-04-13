@@ -31,8 +31,9 @@ def search(request):
     if request.method == 'POST':
         input = request.POST['search']
         print request.POST
-        track = Audio.objects.filter(Q(title__icontains=input)|Q(artist__icontains=input))
+        track = Audio.objects.filter(Q(title__icontains=input)|Q(artist__icontains=input)|Q(genre__icontains=input))
     return render(request, 'music.html', {
+        'request': request,
         'audio': track
     })
 
@@ -291,7 +292,7 @@ def playlist_edit_ajax(request):
     if not pl_id:
         raise Http404
     pl = Playlist.objects.filter(id=pl_id).first()
-    if not pl:
+    if not pl or pl.user != request.user:
         raise Http404
     if name:
         pl.name = name
@@ -312,9 +313,14 @@ def track_edit_ajax(request):
         raise Http404
     artist = request.GET.get('artist')
     title = request.GET.get('title')
+    genre = request.GET.get('genre')
     if artist:
         track.artist = artist
     if title:
         track.title = title
+    if genre:
+        track.genre = genre
+
     track.save()
-    return HttpResponse(json.dumps({'message': 'ok', 'title': track.title, 'artist': track.artist}), content_type="application/json")
+
+    return HttpResponse(json.dumps({'message': 'ok', 'title': track.title, 'artist': track.artist, 'genre': track.genre}), content_type="application/json")

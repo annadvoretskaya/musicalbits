@@ -10,14 +10,13 @@ span.rating {
     display: none !important;
 }
 
-/*#drop {*/
-    /*width: 50px;*/
-    /*height: 50px;*/
-    /*background : red;*/
-/*}*/
-
 .dropzone {
     min-height: 150px !important;
+}
+
+.logo {
+    height: 55px;
+    margin-top: -15px;
 }
 
 .playlist {
@@ -45,6 +44,8 @@ span.rating {
     font-size: -webkit-xxx-large;
     color: #6B5463;
 }
+
+
 .table-header div {
     display: inline-block;
     margin-right: 10px;
@@ -59,6 +60,28 @@ span.rating {
     font-size: 22px;
 }
 
+div .table-header div:nth-child(1) {
+    min-width: 65px;
+    font-weight: 500;
+}
+
+div .table-header div:nth-child(2) {
+    min-width: 250px;
+    font-weight: 500;
+}
+
+.pop-playlist {
+    display: block;
+    min-height: 50px;
+}
+
+.pop-playlist div {
+    display: inline-block;
+    margin-right: 10px;
+    margin-left: 50px;
+}
+
+
 .playlist div {
     display: inline-block;
     margin-right: 10px;
@@ -66,12 +89,15 @@ span.rating {
 
 .playlists a:nth-child(even) {
     background: #B9C8CD;
-    /*opacity: 0.8;*/
 }
 
 .playlists a:nth-child(odd) {
     background: #BEB6BB;
     opacity: 0.9;
+}
+
+#link {
+    background: #E4E4E2;
 }
 
 .playlistForm {

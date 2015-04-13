@@ -79,17 +79,20 @@
 <div id="play">
     <div id="wrapper">
         <h1 id="pl_name">{{ playlist.name }}</h1>
-
+        {% if request.user == playlist.user %}
         <div class="form-group" id="pl_name_input" style="display: none">
             <input type="text" class="form-control" id="new_pl_name" value="{{ playlist.name }}">
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
+        {% endif %}
         <h3 id="pl_desc">{{ playlist.description_html|safe }}</h3>
 
+        {% if request.user == playlist.user %}
         <div class="form-group" id="pl_desc_input" style="display: none">
             <textarea class="form-control textarea" id="new_pl_desc">{{ playlist.description }}</textarea>
             <button type="submit" class="btn btn-primary">Save</button>
         </div>
+        {% endif %}
         <audio preload="none"></audio>
         <ol id="track-list">
             {% for track in audio %}
@@ -106,7 +109,8 @@
                         <button href="#" class="edit-track" data-id="{{ track.id }}"
                                 data-id="{{ track.id }}"
                                 data-artist="{{ track.artist }}"
-                                data-title="{{ track.title }}"><i class="fa fa-pencil"></i></button>
+                                data-title="{{ track.title }}"
+                                data-genre="{{ track.genre }}"><i class="fa fa-pencil"></i></button>
                         <button href="#" class="delete-track" data-id="{{ track.id }}"><i class="fa fa-trash"></i>
                         </button>
                     {% endif %}
@@ -131,6 +135,10 @@
                 <label for="exampleInputPassword1">Title</label>
                 <input type="text" class="form-control" id="title">
             </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Genre</label>
+                <input type="text" class="form-control" id="genre">
+            </div>
             <input type="hidden" id="track-id"/>
             <button type="submit" class="btn btn-primary" id="save-track">Save</button>
         </div>
@@ -140,6 +148,7 @@
 <script src="{% static 'audiojs/audio.min.js' %}"></script>
 <script type="text/javascript">
     $(function () {
+        {% if request.user == playlist.user %}
         $("#pl_name").on('click', function () {
             $(this).hide();
             $('#pl_name_input').show();
@@ -148,6 +157,8 @@
             $(this).hide();
             $('#pl_desc_input').show();
         });
+
+
         $('#pl_name_input button').on('click', function () {
             var name = $('#new_pl_name').val();
             $.ajax({
@@ -159,6 +170,7 @@
             });
 
         });
+
         $('#pl_desc_input button').on('click', function () {
             var desc = $('#new_pl_desc').val();
             $.ajax({
@@ -169,8 +181,9 @@
                 $('#pl_desc').html(data.desc);
                 $('#pl_desc').show();
             });
-
         });
+        {% endif %}
+
         // Setup the player to autoplay the next track
         var a = audiojs.createAll({
             trackEnded: function () {
@@ -213,6 +226,7 @@
                 audio.playPause();
             }
         });
+
         $('.delete-track').on('click', function (event) {
             event.preventDefault();
             id = $(this).data('id');
@@ -226,6 +240,7 @@
             });
 
         });
+
         $('.add-track').on('click', function (event) {
             event.preventDefault();
             icon = $($(this).children());
@@ -238,14 +253,17 @@
             });
 
         });
+        {% if request.user == playlist.user %}
         $('.edit-track').on('click', function (event) {
             $('.modal').modal('show');
             var id = $(this).data('id');
             var artist = $(this).data('artist');
             var title = $(this).data('title');
+            var genre = $(this).data('genre');
             $('#track-id').val(id);
             $('#artist').val(artist);
             $('#title').val(title);
+            $('#genre').val(genre);
         });
         $('#save-track').on('click', function () {
             $.ajax({
@@ -253,13 +271,15 @@
                 data: {
                     id: $('#track-id').val(),
                     artist: $('#artist').val(),
-                    title: $('#title').val()
+                    title: $('#title').val(),
+                    genre: $('#genre').val()
                 }
             }).done(function (data) {
                 $($('li.track-' + $('#track-id').val()).children()[0]).html(data.artist + ' - ' + data.title);
                 var tmp = $('.track-' + $('#track-id').val() + ' .edit-track');
                 tmp.attr('data-artist', data.artist);
                 tmp.attr('data-title', data.title);
+                tmp.attr('data-genre', data.genre);
                 $('.modal').modal('hide');
             });
         });
@@ -273,7 +293,7 @@
                 });
             }
         });
-        {#        $("#track-list").disableSelection();#}
+        {% endif %}
     });
 </script>
 

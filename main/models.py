@@ -26,7 +26,7 @@ class Audio(models.Model):
     owner = models.ForeignKey(ApplicationUser, null=True, blank=True, default=None, related_name='tracks')
     deleted = models.BooleanField(default=False)
     last_updated = models.DateTimeField(auto_now=True, default=None)
-    # download_date = models.DateTimeField(auto_now_add=True, blank=True)
+    genre = models.CharField(max_length=100, blank=True, null=True, default=None)
 
     @property
     def name(self):
@@ -73,9 +73,9 @@ class Tag(models.Model):
     audio = models.ForeignKey(Audio, null=True, blank=True, default=None, related_name='tags')
 
 
-class Genre(models.Model):
-    name = models.CharField(max_length=50)
-    audio = models.ForeignKey(Audio, null=True, blank=True, default=None, related_name='genres')
+# class Genre(models.Model):
+#     name = models.CharField(max_length=50)
+#     audio = models.ForeignKey(Audio, null=True, blank=True, default=None, related_name='genres')
 
 
 class AudioRating(models.Model):
