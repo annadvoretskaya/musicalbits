@@ -2,10 +2,11 @@
 {% block content %}
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main1">
     {% for playlist in playlists %}
-        <a href="{% url 'playlist_info' playlist.id %}">
+        <div class="playlists">
+        <a href="{% url 'playlist_info' playlist.id %}" class="playlist">
             <div>{{ playlist.name }}</div>
-            <div>{{ playlist.num_likes }}</div>
         </a>
+        </div>
     {% endfor %}
     </div>
 {% endblock %}

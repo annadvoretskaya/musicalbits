@@ -23,7 +23,6 @@
             $.ajax({
                 url: $(this).data('url')
             }).done(function(data){
-                console.log(data);
                 var like_text = 'Like';
                 if(data.liked) {
                     like_text = 'Unlike';

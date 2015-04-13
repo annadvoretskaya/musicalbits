@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.urlresolvers import reverse
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Q
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
@@ -22,8 +22,18 @@ def home(request):
     return render(request, 'home.html', {
         'user': request.user,
         'request': request,
-        'audio_upload_form': AudioUploadForm(),
+        # 'audio_upload_form': AudioUploadForm(),
         'audio': request.user.audio.filter(deleted=False).annotate(rating=Avg('ratings__value')) if not request.user.is_anonymous() else []
+    })
+
+def search(request):
+    track = None
+    if request.method == 'POST':
+        input = request.POST['search']
+        print request.POST
+        track = Audio.objects.filter(Q(title__icontains=input)|Q(artist__icontains=input))
+    return render(request, 'music.html', {
+        'audio': track
     })
 
 @login_required
@@ -195,9 +205,6 @@ def file_upload_ajax(request):
     if file:
         data = Dropbox().upload(file)
         audiofile = load(file.temporary_file_path())
-        print dir(audiofile)
-        print '/////////////////////'
-        print dir(audiofile.tag)
         audio = Audio.objects.create(artist=audiofile.tag.artist,
                                      title=audiofile.tag.title,
                                      url=data['url'],
@@ -222,6 +229,19 @@ def file_delete_ajax(request):
         raise Http404
     track.deleted = True
     track.save()
+    return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")
+
+
+@login_required
+@csrf_exempt
+def file_add_ajax(request):
+    id = request.GET.get('id', None)
+    if not id:
+        raise Http404
+    track = Audio.objects.filter(id=id).first()
+    if track and track.owner == request.user:
+        raise Http404
+    request.user.audio.add(track)
     return HttpResponse(json.dumps({'message': 'ok'}), content_type="application/json")
 
 

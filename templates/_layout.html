@@ -54,8 +54,9 @@
                         <i class="fa fa-vk"></i></a>
                 </div>
             {% endif %}
-            <form class="navbar-form pull-right">
-                <input type="text" class="form-control" placeholder="Search...">
+            <form class="navbar-form pull-right" action="{% url 'search' %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="search" class="form-control" placeholder="Search...">
             </form>
         </div>
     </div>

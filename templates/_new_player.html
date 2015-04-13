@@ -110,6 +110,9 @@
                         <button href="#" class="delete-track" data-id="{{ track.id }}"><i class="fa fa-trash"></i>
                         </button>
                     {% endif %}
+                    {% if user != track.owner and not user.is_anonymous %}
+                        <button href="#" class="add-track" data-id="{{ track.id }}"><i class="fa fa-plus"></i></button>
+                    {% endif %}
                 </li>
 
             {% endfor %}
@@ -120,16 +123,16 @@
      aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-                <div class="form-group">
-                    <label for="exampleInputEmail1">Artist</label>
-                    <input type="text" class="form-control" id="artist">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Title</label>
-                    <input type="text" class="form-control" id="title">
-                </div>
-                <input type="hidden" id="track-id"/>
-                <button type="submit" class="btn btn-primary" id="save-track">Save</button>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Artist</label>
+                <input type="text" class="form-control" id="artist">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Title</label>
+                <input type="text" class="form-control" id="title">
+            </div>
+            <input type="hidden" id="track-id"/>
+            <button type="submit" class="btn btn-primary" id="save-track">Save</button>
         </div>
     </div>
 </div>
@@ -223,6 +226,18 @@
             });
 
         });
+        $('.add-track').on('click', function (event) {
+            event.preventDefault();
+            icon = $($(this).children());
+            id = $(this).data('id');
+            $.ajax({
+                url: "{% url 'file_add_ajax' %}?id=" + id
+            }).done(function (data) {
+                console.log(icon)
+                icon.removeClass("fa fa-plus").addClass("fa fa-check");
+            });
+
+        });
         $('.edit-track').on('click', function (event) {
             $('.modal').modal('show');
             var id = $(this).data('id');
@@ -232,7 +247,7 @@
             $('#artist').val(artist);
             $('#title').val(title);
         });
-        $('#save-track').on('click', function(){
+        $('#save-track').on('click', function () {
             $.ajax({
                 url: "{% url 'track_edit_ajax' %}",
                 data: {
